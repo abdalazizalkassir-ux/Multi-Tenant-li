@@ -1,0 +1,286 @@
+# Multi-Tenant Headless CMS Engine
+
+A scalable SaaS-ready Headless Content Management System built with **NestJS**, **MySQL**, and **TypeScript**. The platform enables multiple organizations (tenants) to manage their own content in completely isolated workspaces while supporting dynamic schema creation and runtime content validation.
+
+## 🚀 Project Overview
+
+This project provides a backend-only REST API that allows businesses to:
+
+- Create and manage isolated tenant workspaces.
+- Define custom content types dynamically.
+- Create, update, retrieve, and soft-delete content entries.
+- Enforce role-based access control (RBAC).
+- Validate content dynamically against administrator-defined schemas.
+- Access interactive API documentation through Swagger/OpenAPI.
+
+The system follows a multi-tenant architecture where all tenant data is logically separated, ensuring complete data isolation and security between organizations.
+
+---
+
+## ✨ Key Features
+
+### Multi-Tenant Architecture
+- Tenant-specific data isolation.
+- Shared database with strict tenant scoping.
+- Zero cross-tenant data leakage.
+
+### Authentication & Authorization
+- JWT-based authentication.
+- Access Token (15 minutes).
+- Refresh Token support.
+- Password strength validation.
+- Secure token storage and verification.
+
+### Role-Based Access Control
+
+| Role | Permissions |
+|--------|-------------|
+| ADMIN | Full workspace control, schema management, user management, content management |
+| EDITOR | Create, update, and soft-delete content |
+| VIEWER | Read-only access |
+
+Supported roles originate from the project requirements.
+
+### Dynamic Content Types
+Administrators can create custom content models such as:
+
+- Products
+- Blog Posts
+- Job Listings
+- Articles
+- Custom Business Entities
+
+Supported field types:
+
+- string
+- number
+- boolean
+- text
+
+### Runtime Data Validation
+Content submissions are validated dynamically against their associated content type schema.
+
+Validation includes:
+- Required field checking
+- Data type verification
+- Schema compliance enforcement
+
+### Content Management
+- Draft and Published states
+- Pagination
+- Filtering
+- Sorting
+- Soft deletion
+- Dynamic content structures
+
+### API Documentation
+- Swagger/OpenAPI integration
+- Interactive endpoint testing
+- Request and response schemas
+
+---
+
+## 🛠 Technology Stack
+
+### Backend
+- NestJS
+- TypeScript
+
+### Database
+- MySQL 8.x
+
+### ORM
+- Prisma ORM / TypeORM
+
+### Authentication
+- JWT
+- Refresh Tokens
+- Password Hashing
+
+### Documentation
+- Swagger OpenAPI
+
+Project architecture overview:
+
+---
+
+## 📂 Core Modules
+
+### Authentication Module
+
+#### Register Tenant
+Creates:
+- New tenant workspace
+- Root administrator account
+
+```http
+POST /api/v1/auth/register
+```
+
+#### Login
+
+```http
+POST /api/v1/auth/login
+```
+
+Returns:
+- Access Token
+- Refresh Token
+
+Authentication workflow requirements are defined in the blueprint.
+
+---
+
+### Content Type Module
+
+Create dynamic schemas:
+
+```http
+POST /api/v1/content-types
+```
+
+Only ADMIN users can access this endpoint.
+
+Example schema:
+
+```json
+{
+  "name": "Products",
+  "slug": "products",
+  "schema": [
+    {
+      "field": "sku",
+      "type": "string",
+      "required": true
+    },
+    {
+      "field": "price",
+      "type": "number",
+      "required": true
+    }
+  ]
+}
+```
+
+Schema builder example:
+
+---
+
+### Content Module
+
+#### Create Content
+
+```http
+POST /api/v1/content/:contentTypeSlug
+```
+
+#### Retrieve Content
+
+```http
+GET /api/v1/content/:contentTypeSlug
+```
+
+Supports:
+
+- Pagination
+- Sorting
+- Filtering
+
+#### Delete Content
+
+```http
+DELETE /api/v1/content/:contentTypeSlug/:id
+```
+
+Uses soft deletion rather than permanent database removal.
+
+Content API workflow:
+
+---
+
+## 🔒 Security
+
+The system implements:
+
+- JWT Authentication
+- Refresh Tokens
+- Password Hashing
+- RBAC Authorization
+- Tenant-bound Queries
+- Route Guards
+- Dynamic Schema Validation
+
+All queries are scoped by tenant context to prevent unauthorized access across organizations.
+
+---
+
+## 📋 Acceptance Criteria
+
+The project satisfies the following requirements:
+
+✅ Complete tenant isolation
+
+✅ Strict role enforcement
+
+✅ Dynamic schema creation
+
+✅ Runtime content validation
+
+✅ Soft deletion support
+
+✅ Swagger API documentation
+
+✅ Pagination, sorting, and filtering
+
+✅ JWT authentication and refresh tokens
+
+Tenant and permission requirements summary:
+
+---
+
+## 🚦 Verification Scenarios
+
+### Tenant Isolation Test
+
+1. Create Tenant A.
+2. Create content under Tenant A.
+3. Login as Tenant B.
+4. Attempt to access Tenant A content.
+5. Expected Result: No data returned.
+
+### Permission Test
+
+1. Login as VIEWER.
+2. Attempt content deletion.
+3. Expected Result: 403 Forbidden.
+
+### Documentation Test
+
+Navigate to:
+
+```bash
+/api/docs
+```
+
+Swagger UI should display all API routes and security requirements.
+
+---
+
+## Future Enhancements
+
+- User invitation system
+- Content versioning
+- Audit logs
+- Media management
+- Webhooks
+- API rate limiting
+- Multi-language content support
+- Redis caching
+- Event-driven architecture
+- Kubernetes deployment
+
+---
+
+## License
+
+This project is developed as an advanced backend engineering assignment demonstrating multi-tenant SaaS architecture, dynamic schema management, RBAC security, and scalable REST API design.
